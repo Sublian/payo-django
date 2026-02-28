@@ -1,0 +1,94 @@
+name: Django CI with Docker
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DEBUG: 1
+      SECRET_KEY: test-secret
+      POSTGRES_DB: test_db
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pass
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      ALLOWED_HOSTS: localhost,127.0.0.1
+
+    steps:
+      - name: ⬇️ Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      
+        # Configuración Rápida con Cacheo de Dependencias
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Paso para formateo con Black
+      - name: Check formatting with Black
+        run: |
+          pip install black
+          black --check --diff .
+
+      # Paso para linting con Flake8
+      - name: Lint with Flake8
+        run: |
+          pip install flake8
+          flake8 users/ products/ myproject/ tests/ \
+          --count \
+          --max-complexity=10 \
+          --max-line-length=88 \
+          --statistics
+
+      - name: 📦 Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🐘 Esperar PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432; do
+            echo "Esperando postgres..."
+            sleep 2
+          done
+
+      - name: 🧩 Crear migraciones (seguro)
+        run: |
+          python manage.py makemigrations
+
+      - name: 🧩 Aplicar migraciones
+        run: |
+          python manage.py migrate
+
+      - name: 🧪 Ejecutar tests
+        run: |
+          pytest
