@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # Variables de entorno para Python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -9,22 +9,24 @@ WORKDIR /app
 
 # Instalar dependencias del sistema necesarias para PostgreSQL
 RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    gcc \
-    python3-dev \
-    musl-dev \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+postgresql-client \
+gcc \
+python3-dev \
+musl-dev \
+curl \
+&& rm -rf /var/lib/apt/lists/*
+
 
 # Copiar archivo de dependencias
-COPY requirements.txt /app/
+COPY requirements.txt .
 
 # Actualizar pip e instalar dependencias Python
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar todo el proyecto
 COPY . /app/
+
+RUN python manage.py collectstatic --noinput
 
 # Exponer puerto 8000
 EXPOSE 8000

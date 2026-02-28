@@ -26,7 +26,7 @@ services:
   # Servicio de Django
   web:
     build: .
-    container_name: django_web
+    container_name: payo_web
     env_file:
       - .env
     command: >
