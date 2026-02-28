@@ -7,22 +7,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_customuser_role'),
+        ("users", "0002_customuser_role"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='subordinates',
-            field=models.ManyToManyField(blank=True, related_name='superiors', to=settings.AUTH_USER_MODEL),
+            model_name="customuser",
+            name="subordinates",
+            field=models.ManyToManyField(
+                blank=True, related_name="superiors", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='role',
-            field=models.CharField(choices=[('ADMIN', 'Administrador'), ('JEFE', 'Jefe'), ('COORDINADOR', 'Coordinador'), ('COBRADOR', 'Cobrador')], default='COBRADOR', max_length=20),
+            model_name="customuser",
+            name="role",
+            field=models.CharField(
+                choices=[
+                    ("ADMIN", "Administrador"),
+                    ("JEFE", "Jefe"),
+                    ("COORDINADOR", "Coordinador"),
+                    ("COBRADOR", "Cobrador"),
+                ],
+                default="COBRADOR",
+                max_length=20,
+            ),
         ),
         migrations.AlterModelTable(
-            name='customuser',
-            table='users_user',
+            name="customuser",
+            table="users_user",
         ),
     ]

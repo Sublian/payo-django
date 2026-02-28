@@ -6,11 +6,12 @@ class CustomUser(AbstractUser):
     """
     Modelo de usuario personalizado con campos adicionales
     """
+
     ROLE_CHOICES = [
-        ('ADMIN', 'Administrador'),
-        ('JEFE', 'Jefe'),
-        ('COORDINADOR', 'Coordinador'),
-        ('COBRADOR', 'Cobrador'),
+        ("ADMIN", "Administrador"),
+        ("JEFE", "Jefe"),
+        ("COORDINADOR", "Coordinador"),
+        ("COBRADOR", "Cobrador"),
     ]
 
     email = models.EmailField(unique=True, verbose_name="Email")
@@ -23,13 +24,15 @@ class CustomUser(AbstractUser):
     )
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="COBRADOR")
-    subordinates = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='superiors')
+    subordinates = models.ManyToManyField(
+        "self", symmetrical=False, blank=True, related_name="superiors"
+    )
 
     def can_modify_records(self):
-        return self.role != 'COBRADOR'
+        return self.role != "COBRADOR"
 
     class Meta:
-        db_table = 'users_user'
+        db_table = "users_user"
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
         ordering = ["-created_at"]
