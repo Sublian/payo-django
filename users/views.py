@@ -1,9 +1,10 @@
+'''
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate, login, logout
-from .models import CustomUser
+from .models import User
 from .serializers import (
     UserSerializer,
     UserCreateSerializer,
@@ -19,7 +20,7 @@ import logging
 logger = logging.getLogger("django.request")
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
+class TokenObtainPairView(TokenObtainPairView):
     if "pytest" in sys.argv[0]:
         throttle_classes = []
     else:
@@ -44,7 +45,7 @@ class UserViewSet(viewsets.ModelViewSet):
     ViewSet para CRUD completo de usuarios
     """
 
-    queryset = CustomUser.objects.all()
+    queryset = User.objects.all()
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -165,3 +166,4 @@ class UserViewSet(viewsets.ModelViewSet):
         user.save()
 
         return Response({"message": "Contraseña cambiada exitosamente"})
+'''

@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import CustomUser
+from .models import  User
 
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer para lectura de usuarios"""
 
     class Meta:
-        model = CustomUser
+        model =  User
         fields = [
             "id",
             "username",
@@ -35,7 +35,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = CustomUser
+        model =  User
         fields = [
             "username",
             "email",
@@ -55,7 +55,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop("password_confirm")
-        user = CustomUser.objects.create_user(**validated_data)
+        user =  User.objects.create_user(**validated_data)
         return user
 
 
@@ -63,7 +63,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     """Serializer para actualización de usuarios"""
 
     class Meta:
-        model = CustomUser
+        model =  User
         fields = ["email", "phone", "first_name", "last_name"]
 
 

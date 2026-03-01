@@ -19,7 +19,6 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -125,7 +124,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # coincidir con ./staticfil
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # 🔥 MODELO DE USUARIO PERSONALIZADO
-AUTH_USER_MODEL = "users.CustomUser"
+AUTH_USER_MODEL = "users.User"
 
 # 🔥 CONFIGURACIÓN DE REST FRAMEWORK
 REST_FRAMEWORK = {
@@ -142,15 +141,17 @@ REST_FRAMEWORK = {
         "login": "5/minute",
     },
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "AUTH_HEADER_TYPES": ("Bearer",),
+    # "AUTH_HEADER_TYPES": ("Bearer",),
     # "ROTATE_REFRESH_TOKENS": True,  # ✅ CLAVE
     # "BLACKLIST_AFTER_ROTATION": True,  # ✅ CLAVE
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    # "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
 LOG_DIR = os.path.join(BASE_DIR, "logs")
